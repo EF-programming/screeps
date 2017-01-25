@@ -1,12 +1,6 @@
-var roleHarvester = require('role.harvester');
-var roleUpgrader = require('role.upgrader');
-var roleUpgrader2 = require('role.upgrader2');
-var roleBuilder = require('role.builder');
-var roleRepairer = require('role.repairer');
-var roleAttack = require('ezattackrole');
+require('loadModules')();
 
 module.exports.loop = function () {
-
     curSpawn = Game.spawns['Spawn1'];
     curSpawn.room.controller.activateSafeMode();
     if (Object.keys(curSpawn.memory.staticMines).length < 1) {

@@ -1,22 +1,20 @@
 let mod = {};
 module.exports = mod;
 /*
-withdrawEnergy: Withdraws energy from a structure that can contain energy.
+withdrawEnergy: Withdraws energy from a structure.
 Memory fields used:
 creep.taskTarget: the structure
 */
 mod.taskName = 'withdrawEnergy';
-mod.isStillValid = function (creep, structure) {
-    if (structure === undefined) { // If structure is not passed as an arg, get it from the creep's target.
-        if (creep.taskTarget === undefined) {
-            return false;
-        }
-        structure = creep.taskTarget;
+mod.isStillValid = function (creep) {
+    if (creep.taskTarget === undefined) {
+        return false;
     }
-    if (structure.energy > 0) {
-        return true;
+    structure = creep.taskTarget;
+    if (structure.energy === 0) {
+        return false;
     }
-    return false;
+    return true;
 }
 mod.assignTask = function (creep, structure) {
     creep.memory.taskName = taskName;

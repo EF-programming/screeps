@@ -19,10 +19,10 @@ mod.findTask = function (creep) {
     let needToDumpEnergy = creep.carry.energy > 0;
     let targetPos;
     if (needToDumpEnergy) {
-        targetPos = RoomPosition.getPosFromMem(creep.memory.dumpContainerPos);
+        targetPos = deserializeRoomPos(creep.memory.dumpContainerPos);
     }
     else {
-        targetPos = RoomPosition.getPosFromMem(creep.memory.pickupContainerPos);
+        targetPos = deserializeRoomPos(creep.memory.pickupContainerPos);
     }
     if (creep.room.name !== targetPos.roomName) {
         Creep.tasks.travel.assignTask(creep, targetPos);

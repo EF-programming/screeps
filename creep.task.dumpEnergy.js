@@ -6,17 +6,15 @@ Memory fields used:
 creep.taskTarget: the structure
 */
 mod.taskName = 'dumpEnergy';
-mod.isStillValid = function (creep, structure) { // if structure arg is not passed, it is retrieved from creep.taskTarget
-    if (structure === undefined) {
-        if (creep.taskTarget === undefined) {
-            return false;
-        }
-        structure = creep.taskTarget;
+mod.isStillValid = function (creep) { // if structure arg is not passed, it is retrieved from creep.taskTarget
+    if (creep.taskTarget === undefined) {
+        return false;
     }
-    if (structure.spaceFree > 0 || structure.energyCapacity - structure.energy > 0) { // The || case is for labs
-        return true;
+    structure = creep.taskTarget;
+    if (isFull(structure, RESOURCE_ENERGY)) {
+        return false;
     }
-    return false;
+    return true;
 }
 mod.assignTask = function (creep, structure) {
     creep.memory.taskName = taskName;

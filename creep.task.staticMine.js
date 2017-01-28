@@ -20,18 +20,9 @@ mod.assignTask = function (creep, source, container) {
 mod.doTask = function (creep) {
     let container = Game.getObjectById(creep.memory.containerId);
     if (creep.pos.isNearTo(creep.taskTarget)) { // Mining procedure
-        if (container && container.hitsMax - container.hits >= 500) {
+        if (container && container.hitsMax - container.hits >= 1000) {
             creep.repair(container);
         }
-        // depositing is an instant task soooo.... move the container away
-
-
-        // if (creep.carry.energy === creep.carryCapacity) {
-        //     let container = Game.getObjectById(creep.memory.containerId);
-        //     if (container !== undefined) {
-        //         creep.transfer(container, RESOURCE_ENERGY);
-        //     }
-        // }
         creep.harvest(creep.taskTarget);
     }
     else { // Walk to source

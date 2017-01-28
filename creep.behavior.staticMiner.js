@@ -25,13 +25,13 @@ mod.run = function (creep) {
 }
 // The findTask function can assume that all the state necessary for determining the next task has been assigned in assignBehavior
 mod.findTask = function (creep) {
-    let sourcePos = RoomPosition.getPosFromMem(creep.memory.taskTargetPos);
+    let sourcePos = deserializeRoomPos(creep.memory.taskTargetPos);
     if (creep.room.name !== sourcePos.roomName) {
         Creep.tasks.travel.assignTask(creep, sourcePos);
     }
     else {
         let source = sourcePos.lookFor(LOOK_SOURCES)[0];
-        let containerPos = RoomPosition.getPosFromMem(creep.memory.containerPos);
+        let containerPos = deserializeRoomPos(creep.memory.containerPos);
         let container = sourcePos.lookFor(LOOK_STRUCTURES, {
             filter: x => { x.structureType === STRUCTURE_CONTAINER }
         })[0];

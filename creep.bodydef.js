@@ -1,4 +1,4 @@
-let BodyDef = new function () {
+let BodyDef = function () {
     // returns the best body possible given the room control level and the energy available
     this.haulerBodyDef = {
         baseBody: [WORK, CARRY, CARRY, CARRY], // 350

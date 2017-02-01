@@ -1,38 +1,49 @@
-let mod = {};
-module.exports = mod;
-mod.behaviorName = 'hauler';
-mod.assignBehavior = function (creep, pickupContainerPos, dumpContainerPos) {
-    creep.memory.behaviorName = behaviorName;
-    creep.memory.pickupContainerPos = pickupContainerPos;
-    creep.memory.dumpContainerPos = dumpContainerPos;
-}
-mod.run = function (creep) {
-    if (creep.memory.taskName === 'idle' || !Creep.tasks[creep.memory.taskName].isStillValid(creep)) {
-        findTask(creep);
-    }
-    let taskFinished = Creep.tasks[creep.memory.taskName].doTask(creep);
-    if (taskFinished) {
-        creep.memory.taskName = 'idle';
-    }
-}
-mod.findTask = function (creep) {
-    let needToDumpEnergy = creep.carry.energy > 0;
-    let targetPos;
-    if (needToDumpEnergy) {
-        targetPos = deserializeRoomPos(creep.memory.dumpContainerPos);
-    }
-    else {
-        targetPos = deserializeRoomPos(creep.memory.pickupContainerPos);
-    }
-    if (creep.room.name !== targetPos.roomName) {
-        Creep.tasks.travel.assignTask(creep, targetPos);
-    }
-    else {
-        if (needToDumpEnergy) {
-            Creep.tasks.dumpEnergy.assignTask(creep, targetPos);
+/*
+hauler: Creep moves to a container to take energy from it, then moves to a different
+container or storage to deposit that energy.
+*/
+class Hauler {
+    behaviorName = 'hauler';
+    run = function (creep, mission) {
+        if (creep.carry.energy === 0) { // If creep has no energy, move near container, and wait until the container contains enough to fill the creep's inventory, then withdraw.
+            let container = mission.container;
+            if (creep.pos.isNearTo(container)) {
+                if (container.getStoredAmount(RESOURCE_ENERGY) > creep.carryCapacity - creep.getStoredAmount()) {
+                    creep.withdraw(container, RESOURCE_ENERGY);
+                    creep.blindMoveTo(mission.storage);
+                }
+                else {
+                    creep.moveOffRoad(container, true);
+                }
+            }
+            else {
+                creep.blindMoveTo(container);
+            }
         }
-        else {
-            Creep.tasks.pickupEnergy.assignTask(creep, targetPos);
+        else { // Creep has energy.
+            let storage = mission.storage;
+            if (creep.pos.isNearTo(storage)) {
+                creep.transfer(storage, RESOURCE_ENERGY);
+                if (creep.ticksToLive < mission.analysis.distance * 2 + 5) {
+                    creep.suicide();                // TODO: change this to recycle
+                }
+            }
+            else {
+                this.repairUnderfoot(creep);
+                creep.blindMoveTo(storage);
+            }
+        }
+    }
+    repairUnderfoot(creep) {
+        let road = creep.pos.lookFor(LOOK_STRUCTURES)[0];
+        if (road) {
+            let flags = road.pos.lookFor(LOOK_FLAGS);
+            if (flags.length === 0 || flags[0].color !== COLOR_BROWN) {
+                if (road.hitsMax - road.hits >= 100) {
+                    creep.repair(road);
+                }
+            }
         }
     }
 }
+module.exports = Hauler;

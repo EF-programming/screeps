@@ -1,8 +1,20 @@
-require('loadModules')();
+require('loadModules').loadModules();
+let loopHelper = require('loopHelper');
 
 module.exports.loop = function () {
     // State of the empire, for the current tick, is cached in Game.cache.
     Game.cache = { structures: {}, hostiles: {} };
+
+    let operations = loopHelper.getOperations();
+    for (let operation of operations) {
+        operation.init();
+    }
+    for (let operation of operations) {
+        operation.headCount();
+    }    
+    for (let operation of operations) {
+        operation.actions();
+    }
 
     curSpawn = Game.spawns['Spawn1'];
     curSpawn.room.controller.activateSafeMode();

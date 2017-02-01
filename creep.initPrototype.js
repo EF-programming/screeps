@@ -72,7 +72,7 @@ mod.initPrototype = function () {
             return this.moveTo(destination, ops);
         }
         else {
-            ops.reusePath = 50;
+            ops.reusePath = 200;
             ops.ignoreCreeps = true;
             return this.moveTo(destination, ops);
         }
@@ -84,24 +84,73 @@ mod.initPrototype = function () {
             // Take care of creep that might be in the way
             let occupier = position.lookFor(LOOK_CREEPS)[0];
             if (occupier) {
-                if (this.memory.behaviorName && occupier.memory.behaviorName) {
-                    for (let resourceType in occupier.carry) {
+                if (this.memory.roleName && occupier.memory.roleName) {
+                    for (let resourceType in occupier.carry) { // This actually only transfers one resource type because only one transfer can be done per tick. But we don't know which resource the creep is holding, hence the for loop.
                         occupier.transfer(this, resourceType);
                     }
-                    this.say("my spot!");
+                    //this.say("my spot!");
                     occupier.suicide();
                 }
                 else {
                     let direction = occupier.pos.getDirectionTo(this);
                     occupier.move(direction);
-                    this.say("move it");
+                    //this.say("move it");
                 }
             }
             let direction = this.pos.getDirectionTo(position);
             return this.move(direction);
         }
-        return this.blindMoveTo(position);
+        else {
+            return this.blindMoveTo(position);
+        }
     }
+    // Taken from bonzAI
+    Creep.prototype.idleNear = function (pos, desiredRange = 3) {
+        let range = this.pos.getRangeTo(pos);
+
+        if (range < desiredRange) {
+            this.moveOffRoad(pos);
+        }
+        else if (range === desiredRange) {
+            this.moveOffRoad(pos, true);
+        }
+        else {
+            this.blindMoveTo(pos);
+        }
+    }
+    // Taken from bonzAI (changed to make maintainDistance=false not favor closer spots)
+    // Creep immediately moves off the road. Regardless of the distance to targetPos, the creep moves off the road and if successful, the goal is accomplished.
+    // targetPos is the tile near which the creep should idle. Optional, if not passed will use own pos.
+    // maintainDistance=true means the chosen idle position will be within the same range or less.
+    // targetPos and maintainDistance act as a pair, either pass neither (simply move off the road), or
+    // pass both (move off the road while maintaining distance to target)
+    Creep.prototype.moveOffRoad = function (targetPos = this.pos) {
+        let offRoad = this.pos.lookForStructure(STRUCTURE_ROAD) === undefined;
+        if (offRoad) return OK;
+
+        let positions = this.pos.openAdjacentSpots();
+        if (maintainDistance) {
+            let currentRange = this.pos.getRangeTo(targetPos);
+            positions = _.filter(positions, p => p.getRangeTo(targetPos) <= currentRange);
+        }
+        let swampPosition;
+        for (let position of positions) { // Picks the first "plains" found, otherwise picks "swamp", otherwise blindMoves to targetPos.
+            if (position.lookForStructure(STRUCTURE_ROAD)) continue;
+            let terrain = position.lookFor(LOOK_TERRAIN)[0] as string;
+            if (terrain === "swamp") {
+                swampPosition = position;
+            }
+            else {
+                return this.move(this.pos.getDirectionTo(position));
+            }
+        }
+
+        if (swampPosition) {
+            return this.move(this.pos.getDirectionTo(swampPosition));
+        }
+
+        return this.blindMoveTo(targetPos);
+    };
     Object.defineProperties(Creep.prototype, {
         taskTarget: {
             get: function () {

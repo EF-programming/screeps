@@ -1,4 +1,5 @@
-let mod = new Creep.Behavior();
+require('creep.behavior');
+let mod = new Behavior();
 module.exports = mod;
 mod.behaviorName = 'worker';
 mod.assignBehavior = function (creep) {

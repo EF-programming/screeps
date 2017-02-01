@@ -1,3 +1,5 @@
+let Operation = require('operation');
+let MiningMission = require('mission.mining');
 class MiningOperation extends Operation {
     constructor(flag) {
         super(flag, OPERATION_TYPES[MINING]);

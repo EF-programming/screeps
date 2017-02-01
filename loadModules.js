@@ -3,8 +3,8 @@ module.exports = mod;
 mod.loadModules = function () {
     // The contents of these files go into the global scope.
     _.assign(global,
-        require('constants.js'),
-        require('helper.js')
+        require('constants'),
+        require('helper')
         // If loopHelper is needed in many files, put it here.
     );
 
@@ -15,7 +15,7 @@ mod.loadModules = function () {
     require('structure.initPrototype').initPrototype();
 
     Creep.BodyDef = require('creep.bodydef');
-    _assign(Creep, {
+    _.assign(Creep, {
         tasks: {
             build: require('creep.task.build'),
             dumpEnergy: require('creep.task.dumpEnergy'),
@@ -28,7 +28,7 @@ mod.loadModules = function () {
         behaviors: {
             hauler: require('creep.behavior.hauler'),
             staticMiner: require('creep.behavior.staticMiner'),
-            worker: require('creep.behavior.worker')
+            //worker: require('creep.behavior.worker')
         }
     });
 }

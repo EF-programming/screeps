@@ -1,3 +1,4 @@
+let MiningOperation = require('operation.mining');
 let mod = {};
 module.exports = mod;
 mod.getOperations = function () {
@@ -18,9 +19,10 @@ mod.getOperations = function () {
         return new opClass(flag);
     }
 
-    let operations = {};
-    for (let flag of Game.flags) {
+    let operations = [];
+    for (let flagName in Game.flags) {
         let operation;
+        let flag = Game.flags[flagName];
         switch (flag.color) {
             case COLOR_YELLOW:
                 operation = instantiateOperation(MiningOperation, flag);
@@ -31,14 +33,15 @@ mod.getOperations = function () {
             case COLOR_CYAN:
             case COLOR_GREEN:
             case COLOR_ORANGE:
-                operation = instantiateOperation(MaintenanceOperation, flag);
+                //operation = instantiateOperation(MaintenanceOperation, flag);
                 break;
             case COLOR_BROWN:
             case COLOR_GREY:
             case COLOR_WHITE:
         }
         if (operation) {
-            operations[operation.name] = operation;
+            operations.push(operation);
         }
     }
+    return operations;
 }

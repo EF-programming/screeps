@@ -3,8 +3,7 @@ hauler: Creep moves to a container to take energy from it, then moves to a diffe
 container or storage to deposit that energy.
 */
 class Hauler {
-    behaviorName = 'hauler';
-    run = function (creep, mission) {
+    run(creep, mission) {
         if (creep.carry.energy === 0) { // If creep has no energy, move near container, and wait until the container contains enough to fill the creep's inventory, then withdraw.
             let container = mission.container;
             if (creep.pos.isNearTo(container)) {

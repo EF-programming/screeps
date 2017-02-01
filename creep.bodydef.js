@@ -1,119 +1,120 @@
 class BodyDef {
-    // returns the best body possible given the room control level and the energy available
-    hauler = {
-        baseBody: [WORK, CARRY],
-        multiBody: [CARRY], // 150
-        multiCount: function (specs) {
-            if (specs[CARRY]) {
-                return specs[CARRY];
-            }
-            switch (specs.rcl) {
-                case 1:
-                case 2:
-                    return ERR_rcl_NOT_ENOUGH;
-                case 3:
-                    return 4;
-                case 4:
-                    return 6;
-                case 5:
-                    return 8;
-                case 6:
-                case 7:
-                case 8:
-                    return 10;
-            }
-        },
-        speed: SPEED_ROAD_1_TICK,
-        speedIgnoreCarryParts: false
-    }
-    staticMinerLocal = { // Local means it is designed to mine in the room that it spawns in. Reflected by slow move speed.
-        baseBody: [CARRY, WORK, WORK, WORK, WORK], // 550
-        multiBody: [WORK],
-        multiCount: function (specs) {
-            switch (specs.rcl) {
-                case 1:
-                case 2:
-                    return ERR_rcl_NOT_ENOUGH;
-                case 3:
-                    return 1;
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                    return 1; // 1 for now but can be 2
-            }
-        },
-        speed: SPEED_ROAD_2_TICKS,
-        speedIgnoreCarryParts: true
-    }
-    staticMinerRemote = { // Remote means it is designed to mine in a different room from the one it spawns in. Reflected by normal move speed.
-        baseBody: [CARRY, WORK, WORK, WORK, WORK], // 550
-        multiBody: [WORK],
-        multiCount: function (specs) {
-            switch (specs.rcl) {
-                case 1:
-                case 2:
-                    return ERR_rcl_NOT_ENOUGH;
-                case 3:
-                    return 1;
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                    return 1; // 1 for now but can be 2
-            }
-        },
-        speed: SPEED_ROAD_1_TICKS,
-        speedIgnoreCarryParts: true
-    }
-    upgrader = {
-        baseBody: [CARRY, WORK, WORK, WORK, WORK, WORK], // 550
-        multiBody: [WORK], // Base body gets 1 fatigue per step. Can go up to multi 3 without slowing down more. If more than 8 work parts are needed, prob make another body def for super upgrader.
-        multiCount: function (specs) {
-            switch (specs.rcl) {
-                case 1:
-                case 2:
-                    return ERR_rcl_NOT_ENOUGH;
-                case 3:
-                    return 1;
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                    return 1; // 1 for now but can be 2
-            }
-        },
-        speed: SPEED_ROAD_2_TICKS,
-        speedIgnoreCarryParts: true
-    }
-    worker = {
-        baseBody: [WORK, CARRY], // 200
-        multiBody: [WORK, CARRY],
-        multiCount: function (specs) {
-            switch (specs.rcl) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    return rcl - 1;
-                case 5:
-                case 6:
-                    return 3;
-            }
-        },
-        speed: SPEED_ROAD_1_TICK,
-        speedIgnoreCarryParts: false
+    constructor() {
+        this.hauler = {
+            baseBody: [WORK, CARRY],
+            multiBody: [CARRY], // 150
+            multiCount: function (specs) {
+                if (specs[CARRY]) {
+                    return specs[CARRY];
+                }
+                switch (specs.rcl) {
+                    case 1:
+                    case 2:
+                        return ERR_RCL_NOT_ENOUGH;
+                    case 3:
+                        return 4;
+                    case 4:
+                        return 6;
+                    case 5:
+                        return 8;
+                    case 6:
+                    case 7:
+                    case 8:
+                        return 10;
+                }
+            },
+            speed: SPEED_ROAD_1_TICK,
+            speedIgnoreCarryParts: false
+        }
+        this.staticMinerLocal = { // Local means it is designed to mine in the room that it spawns in. Reflected by slow move speed.
+            baseBody: [CARRY, WORK, WORK, WORK, WORK], // 550
+            multiBody: [WORK],
+            multiCount: function (specs) {
+                switch (specs.rcl) {
+                    case 1:
+                    case 2:
+                        return ERR_RCL_NOT_ENOUGH;
+                    case 3:
+                        return 1;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                        return 1; // 1 for now but can be 2
+                }
+            },
+            speed: SPEED_ROAD_2_TICKS,
+            speedIgnoreCarryParts: true
+        }
+        this.staticMinerRemote = { // Remote means it is designed to mine in a different room from the one it spawns in. Reflected by normal move speed.
+            baseBody: [CARRY, WORK, WORK, WORK, WORK], // 550
+            multiBody: [WORK],
+            multiCount: function (specs) {
+                switch (specs.rcl) {
+                    case 1:
+                    case 2:
+                        return ERR_RCL_NOT_ENOUGH;
+                    case 3:
+                        return 1;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                        return 1; // 1 for now but can be 2
+                }
+            },
+            speed: SPEED_ROAD_1_TICKS,
+            speedIgnoreCarryParts: true
+        }
+        this.upgrader = {
+            baseBody: [CARRY, WORK, WORK, WORK, WORK, WORK], // 550
+            multiBody: [WORK], // Base body gets 1 fatigue per step. Can go up to multi 3 without slowing down more. If more than 8 work parts are needed, prob make another body def for super upgrader.
+            multiCount: function (specs) {
+                switch (specs.rcl) {
+                    case 1:
+                    case 2:
+                        return ERR_RCL_NOT_ENOUGH;
+                    case 3:
+                        return 1;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                        return 1; // 1 for now but can be 2
+                }
+            },
+            speed: SPEED_ROAD_2_TICKS,
+            speedIgnoreCarryParts: true
+        }
+        this.worker = {
+            baseBody: [WORK, CARRY], // 200
+            multiBody: [WORK, CARRY],
+            multiCount: function (specs) {
+                switch (specs.rcl) {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        return rcl - 1;
+                    case 5:
+                    case 6:
+                        return 3;
+                }
+            },
+            speed: SPEED_ROAD_1_TICK,
+            speedIgnoreCarryParts: false
+        }
     }
     // bodyDef: one of the bodydef objects defined in this class.
     // specs: object containing optional args listed below, setting limits on the minimum/maximum size of the creep
     // --rcl: rcl of room with spawner. Default 8.
     // --budget:number Maximum energy willing to spend. Will return the biggest body that fits within budget. Default no budget.
     // --bodypart:number Desired number of this body part. Only bodyparts relevant to bodydef are checked (hauler won't equip 5 attack parts).
-    getBody = function (bodyDef, specs) { // A lot of these calculations could be hardcoded in body defs. Faster but harder to maintain.
-        if (!specs.rcl) { specs.rcl = 8};
+    getBody(bodyDef, specs) { // A lot of these calculations could be hardcoded in body defs. Faster but harder to maintain.
+        if (!specs.rcl) { specs.rcl = 8 };
         // Get the number of move parts for basebody and multibody NOT ROUNDED
         let movePartsForBaseBody = getMovePartsAmount(bodyDef.baseBody, bodyDef.speed, bodyDef.ignoreCarry);
         let movePartsForMulti = getMovePartsAmount(bodyDef.multiBody, bodyDef.speed, bodyDef.ignoreCarry);
@@ -143,7 +144,7 @@ class BodyDef {
     // Returns the number of MOVE parts needed to move at the given speed. Returns float value by default, needs to be rounded up at some point.
     // Assumes no MOVE parts are present in 'body' arg.
     // roundUp = true will round the number of move parts up to the nearest integer, which is the necessary amount to move at the requested speed.
-    getMovePartsAmount = function (body, speed, ignoreCarry, roundUp = false) {
+    getMovePartsAmount(body, speed, ignoreCarry, roundUp = false) {
         let partCount = body.length;
         if (ignoreCarry) {
             for (let i = 0; i < body.length; i++) {
@@ -160,7 +161,7 @@ class BodyDef {
         }
     }
     // Builds the finished creep body.
-    composeBody = function (bodyDef, multiCount, movePartsCount) {
+    composeBody(bodyDef, multiCount, movePartsCount) {
         let composedBody = bodyDef.baseBody.slice();
         for (i = 0; i < multiCount; i++) {
             composedBody.apply(bodyDef.multiBody);
@@ -174,7 +175,7 @@ class BodyDef {
     // Builds the finished creep body. Body parts are ordered in a way that aims to keep
     // the highest general efficiency at all percentages of body damage. This is not 
     // the best order for all tasks.
-    composeBodySuperSorted = function (bodyDef, multiCount, movePartsCount) {
+    composeBodySuperSorted(bodyDef, multiCount, movePartsCount) {
         // Count the number of each part
         let partCount = {};
         partCount[WORK] = 0;
@@ -243,7 +244,7 @@ class BodyDef {
         }
         return composedBody;
     }
-    getPrice = function (body) {
+    getPrice(body) {
         let price = 0;
         for (let i = 0; i < body.length; i++) {
             price += BODYPART_COST[body[i]];
@@ -252,7 +253,7 @@ class BodyDef {
     }
     // Taken from OCS
     // Pass as arg to sorting function to sort bodyparts in this order.
-    partsComparator = function (partA, partB) {
+    partsComparator(partA, partB) {
         let partsOrder = [TOUGH, CLAIM, WORK, CARRY, ATTACK, RANGED_ATTACK, HEAL, MOVE];
         let indexOfA = partsOrder.indexOf(a);
         let indexOfB = partsOrder.indexOf(b);

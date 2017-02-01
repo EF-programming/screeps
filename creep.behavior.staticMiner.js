@@ -3,9 +3,8 @@ staticMiner: Creep is assigned a source (can be in a different room). Moves
 to the source and mines it forever. Drops energy, preferably into a given container.
 */
 class StaticMiner {
-    behaviorName = 'staticMiner';
     // The findTask function can assume that all the state necessary for determining the next task has been assigned in assignBehavior
-    run = function (creep, mission) {
+    run(creep, mission) {
         let source = mission.source;
         let container = mission.container;
         if (creep.pos.isEqualTo(container)) { // Mine

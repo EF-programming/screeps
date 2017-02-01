@@ -1,11 +1,11 @@
 require('loadModules').loadModules();
-let loopHelper = require('loopHelper');
+let loophelper = require('loophelper');
 
 module.exports.loop = function () {
     // State of the empire, for the current tick, is cached in Game.cache.
     Game.cache = { structures: {}, hostiles: {} };
 
-    let operations = loopHelper.getOperations();
+    let operations = loophelper.getOperations();
     for (let operation of operations) {
         operation.init();
     }

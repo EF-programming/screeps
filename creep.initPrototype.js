@@ -136,7 +136,7 @@ mod.initPrototype = function () {
         let swampPosition;
         for (let position of positions) { // Picks the first "plains" found, otherwise picks "swamp", otherwise blindMoves to targetPos.
             if (position.lookForStructure(STRUCTURE_ROAD)) continue;
-            let terrain = position.lookFor(LOOK_TERRAIN)[0] as string;
+            let terrain = position.lookFor(LOOK_TERRAIN)[0];
             if (terrain === "swamp") {
                 swampPosition = position;
             }

@@ -8,7 +8,7 @@ let mod = {
     MISSION_TYPES: {
         MINING: "mining",
     },
-    ALLIES = {
+    ALLIES: {
         Crono: true,
         Ironcache: true,
         Mercury: true,

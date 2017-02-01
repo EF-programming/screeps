@@ -1,3 +1,4 @@
+let Mission = require('mission');
 // MiningMission does three main things.
 // 1. Send one miner to mine a source. Miner builds container at the source.
 // 2. Send haulers to bring back energy mined by miner.

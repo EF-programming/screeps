@@ -8,15 +8,12 @@ let Mission = require('mission');
 // Member variables: source, container, storage, analysis, miners, haulers.
 class MiningMission extends Mission {
     constructor(operation, source) {
-        let missionName = operation.operationName + "(" + MISSION_TYPES[MINING] + perfectHashTwoInts(source.pos.x, source.pos.y) + ")";
+        let missionName = operation.operationName + "(" + MISSION_MINING + perfectHashTwoInts(source.pos.x, source.pos.y) + ")";
         super(operation, missionName);
         this.source = source;
     }
     initMission() {
-        if (!this.memory.spawn) {
-            this.memory.spawn = this.operation.findSpawn();
-        }
-        this.spawn = this.memory.spawn;
+        this.spawn = this.operation.findSpawn();
         // find storage.
         // Hardcoded, assumes storage exists.
         let room = Game.flags[this.roomName].room;
@@ -26,7 +23,7 @@ class MiningMission extends Mission {
         this.container = this.findContainer(); // TODO: if the container doesn't exist we're screwed
 
         if (!this.memory.analysis) {
-            this.memory.analysis = this.calculateMiningAndHaulingStats();
+            this.memory.analysis = this.calculateHaulingStats();
         }
         // maybe determine if room is too dangerous to send miners & spawn new ones. Check if any 
         // room on the way is in a state of "under assault" and do not execute the mission if so.
@@ -45,7 +42,7 @@ class MiningMission extends Mission {
         }
     }
     findContainer() {
-        for (pos in this.source.openAdjacentSpots({ ignoreCreeps: true })) {
+        for (let pos of this.source.pos.openAdjacentSpots({ ignoreCreeps: true })) {
             if (pos.lookFor(LOOK_STRUCTURES).length > 0) {
                 // Stupid assumption for now.
                 return pos.lookFor(LOOK_STRUCTURES)[0];
@@ -54,10 +51,10 @@ class MiningMission extends Mission {
     }
     calculateHaulingStats() {
         let analysis = {};
-        let result = PathFinder.search(this.source.pos, { goal: this.storage, range: 1 });
+        let result = PathFinder.search(this.source.pos, { pos: this.storage.pos, range: 1 });
         analysis.distance = result.path.length;
         let minePerTick = this.source.energyCapacity / ENERGY_REGEN_TIME;
-        let maxSize = Creep.BodyDef.hauler.multiCount(this.spawn.room.controller.level) + 1;
+        let maxSize = Creep.BodyDef.hauler.multiCount({rcl: this.spawn.room.controller.level}) + 1;
         let maxHaulPerTickPerHauler = Math.floor((maxSize * CARRY_CAPACITY) / (analysis.distance * 2));
         let numOfHaulers = Math.ceil(minePerTick / maxHaulPerTickPerHauler); // The minimum number of haulers needed to haul the energy.
         let avgHaulPerTickPerHauler = minePerTick / numOfHaulers; // Distribute the energy load evenly between haulers.

@@ -5,13 +5,16 @@ class Mission {
         this.missionName = missionName;
         this.roomName = operation.roomName;
         this.hasVision = operation.hasVision;
-        this.memory = operation.flag.memory[this.missionName];
+        if (!operation.memory[this.missionName]) {
+            operation.memory[this.missionName] = {};
+        }
+        this.memory = operation.memory[this.missionName];
     }
 
     // Finds creeps belonging to mission by checking names in Game.creeps.
     // namePrefix is the role of the creep such as "miner".
     findMissionCreeps(namePrefix) {
-        let creepNames;
+        let creepNames = [];
         for (let creepName in Game.creeps) {
             if (creepName.startsWith(namePrefix) && creepName.includes(this.missionName)) {
                 creepNames.push(creepName);
@@ -32,20 +35,24 @@ class Mission {
     // --nospawn:bool Do not spawn new creeps if population below target. False by default.
     // --flexbudget:bool Allow creating creeps with smaller bodies if spawn does not have enough energy. False by default.
     getMissionCreeps(roleName, amount, bodydef, bodyspecs, opts) {
-        if (!opts) { options = {}; }
+        if (!bodyspecs) { bodyspecs = {}; }
+        if (!opts) { opts = {}; }
+        if (!this.memory.creeps) { this.memory.creeps = []; }
         let creeps = []; // Living creeps that will be returned by this function.
         // The creeps belonging to the mission are stored in memory. If the memory is not there
         // it finds the creeps by iterating Game.creeps and grabbing names that match this mission+role.
-        if (this.memory.creeps[roleName] === undefined) {
+        if (!this.memory.creeps[roleName]) {
             this.memory.creeps[roleName] = this.findMissionCreeps(roleName);
         }
         // Check if any creeps died since last tick. Also check their ttl, to prespawn.
         let goodCreeps = 0; // Sum of creeps with ttl>spawnTime and currently spawning creeps
-        for (let i = 0; i < this.memory.creeps[roleName]; i++) {
+        for (let i = 0; i < this.memory.creeps[roleName].length; i++) {
             let creepName = this.memory.creeps[roleName][i];
             let creep = Game.creeps[creepName];
             if (creep) {
-                creeps.push(creep);
+                if (!creep.spawning) {
+                    creeps.push(creep);
+                }
                 let prespawnTicks = creep.body.length * 3;
                 if (opts.prespawn !== undefined) {
                     prespawnTicks += opts.prespawn;
@@ -63,9 +70,9 @@ class Mission {
         // Finished collecting living creeps. Now spawn/prespawn creeps if population is too small.
         if (goodCreeps < amount) { // Only spawns 1 at a time for now.
             let creepName = roleName + Math.floor(Math.random() * 100) + "_" + this.missionName; // Will rarely fail because of math.random creating an existing name but it's a very low priority issue to fix.
-            let body = Creep.BodyDef.getBody(bodydef, specs); // Not implementing variable budget option yet
-            if (this.spawn.canCreateCreep(body, creepName)) {
-                this.spawn.createCreep(body, creepName, {roleName: roleName});
+            let body = Creep.BodyDef.getBody(bodydef, bodyspecs); // Not implementing variable budget option yet
+            if (this.spawn.canCreateCreep(body, creepName) === OK) {
+                this.spawn.createCreep(body, creepName, { roleName: roleName });
                 this.memory.creeps[roleName].push(creepName);
             }
         }

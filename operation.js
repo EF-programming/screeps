@@ -9,7 +9,7 @@ class Operation {
         this.operationName = flag.name; // operationName is a unique name in the format of "operationTypeName" + "@" + "roomName"
         this.operationTypeName = operationTypeName;
         this.memory = flag.memory;
-        this.missions = {};
+        this.missions = [];
         this.hasVision = flag.room ? true : false; // .room is undefined when no vision.
     }
     init() {
@@ -17,7 +17,7 @@ class Operation {
         this.initOperation();
 
         for (let mission of this.missions) {
-            missions.initMission();
+            mission.initMission();
         }
     }
     // Find creeps belonging to missions and spawn any additional needed.
@@ -30,7 +30,7 @@ class Operation {
     }
     actions() {
         for (let mission of this.missions) {
-            missions.actions();
+            mission.actions();
         }
     }
     addMission(mission) {
@@ -39,7 +39,7 @@ class Operation {
     findSpawn(maxDistance = 3) {
         // temporarily hardcoded
         let room = Game.flags[this.roomName].room;
-        return room.find(STRUCTURE_SPAWN[0]);
+        return room.find(FIND_STRUCTURES, { filter: x => x.structureType === STRUCTURE_SPAWN })[0];
         //////// not-hardcoded unfinished below
         let closestDistance = Number.MAX_VALUE;
         let closeRoomNames = [];

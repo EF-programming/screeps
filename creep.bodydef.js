@@ -18,9 +18,10 @@ class BodyDef {
                     case 5:
                         return 8;
                     case 6:
+                        return 15;
                     case 7:
                     case 8:
-                        return 10;
+                        return 29;
                 }
             },
             speed: SPEED_ROAD_1_TICK,
@@ -62,10 +63,10 @@ class BodyDef {
                     case 6:
                     case 7:
                     case 8:
-                        return 1; // 1 for now but can be 2
+                        return 2; // 1 for now but can be 2
                 }
             },
-            speed: SPEED_ROAD_1_TICKS,
+            speed: SPEED_ROAD_1_TICK,
             speedIgnoreCarryParts: true
         }
         this.upgrader = {
@@ -116,20 +117,21 @@ class BodyDef {
     getBody(bodyDef, specs) { // A lot of these calculations could be hardcoded in body defs. Faster but harder to maintain.
         if (!specs.rcl) { specs.rcl = 8 };
         // Get the number of move parts for basebody and multibody NOT ROUNDED
-        let movePartsForBaseBody = getMovePartsAmount(bodyDef.baseBody, bodyDef.speed, bodyDef.ignoreCarry);
-        let movePartsForMulti = getMovePartsAmount(bodyDef.multiBody, bodyDef.speed, bodyDef.ignoreCarry);
+        let movePartsForBaseBody = this.getMovePartsAmount(bodyDef.baseBody, bodyDef.speed, bodyDef.ignoreCarry);
+        let movePartsForMulti = this.getMovePartsAmount(bodyDef.multiBody, bodyDef.speed, bodyDef.ignoreCarry);
         // Calculate the price of baseBody with non-rounded move parts
-        let basePrice = getPrice(bodyDef.baseBody);
-        // Check if we can afford the smallest creep with enough move parts.
+        let basePrice = this.getPrice(bodyDef.baseBody);
         // The math is used to round the price to the next full move part
-        if (basePrice + Math.ceil(movePartsForBaseBody) * BODYPART_COST[MOVE] > budget) {
-            return ERR_NOT_ENOUGH_ENERGY;
-        }
-        let multiPrice = getPrice(bodyDef.multiBody);
+        let multiPrice = this.getPrice(bodyDef.multiBody);
         let maxMulti;
+        let movePartsCount;
         if (specs.budget !== undefined) {
+            // Check if we can afford the smallest creep with enough move parts.
+            if (basePrice + Math.ceil(movePartsForBaseBody) * BODYPART_COST[MOVE] > specs.budget) {
+                return ERR_NOT_ENOUGH_ENERGY;
+            }
             maxMulti = Math.floor((budget - basePrice - movePartsForBaseBody * BODYPART_COST[MOVE]) / (multiPrice + movePartsForMulti * BODYPART_COST[MOVE])); // How many multis can we afford
-            let movePartsCount = movePartsForBaseBody + movePartsForMulti * maxMulti;
+            movePartsCount = movePartsForBaseBody + movePartsForMulti * maxMulti;
             // Check if the rounding to the next full move part overshoots the budget
             if (basePrice + multiPrice * maxMulti + Math.ceil(movePartsCount) * BODYPART_COST[MOVE] > budget) {
                 maxMulti--;
@@ -139,7 +141,8 @@ class BodyDef {
         else {
             maxMulti = bodyDef.multiCount(specs);
         }
-        return composeBody(bodyDef, maxMulti, movePartsCount);
+        movePartsCount = movePartsForBaseBody + movePartsForMulti * maxMulti;
+        return this.composeBody(bodyDef, maxMulti, Math.ceil(movePartsCount));
     }
     // Returns the number of MOVE parts needed to move at the given speed. Returns float value by default, needs to be rounded up at some point.
     // Assumes no MOVE parts are present in 'body' arg.
@@ -163,10 +166,10 @@ class BodyDef {
     // Builds the finished creep body.
     composeBody(bodyDef, multiCount, movePartsCount) {
         let composedBody = bodyDef.baseBody.slice();
-        for (i = 0; i < multiCount; i++) {
-            composedBody.apply(bodyDef.multiBody);
+        for (let i = 0; i < multiCount; i++) {
+            Array.prototype.push.apply(composedBody,bodyDef.multiBody);
         }
-        for (i = 0; i < movePartsCount; i++) {
+        for (let i = 0; i < movePartsCount; i++) {
             composedBody.push(MOVE);
         }
         //composedBody.sort(partsComparator);

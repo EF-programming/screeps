@@ -14,7 +14,7 @@ mod.loadModules = function () {
     require('room.initPrototype').initPrototype();
     require('structure.initPrototype').initPrototype();
 
-    Creep.BodyDef = require('creep.bodydef');
+    Creep.BodyDef = loadInstanceOfClass(require('creep.bodydef'));
     _.assign(Creep, {
         tasks: {
             build: require('creep.task.build'),
@@ -26,9 +26,13 @@ mod.loadModules = function () {
             withdrawEnergy: require('creep.task.withdrawEnergy')
         },
         behaviors: {
-            hauler: require('creep.behavior.hauler'),
-            staticMiner: require('creep.behavior.staticMiner'),
+            hauler: loadInstanceOfClass(require('creep.behavior.hauler')),
+            staticMiner: loadInstanceOfClass(require('creep.behavior.staticMiner')),
             //worker: require('creep.behavior.worker')
         }
     });
+
+    function loadInstanceOfClass(aClass) {
+        return new aClass();
+    }
 }

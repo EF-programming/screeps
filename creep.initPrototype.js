@@ -5,7 +5,7 @@ mod.initPrototype = function () {
         return _.sum(this.carry) === this.carryCapacity;
     }
     // resourceType arg is optional.
-    Structure.prototype.getStoredAmount = function (resourceType) {
+    Creep.prototype.getStoredAmount = function (resourceType) {
         if (resourceType === undefined) {
             return _.sum(this.store);
         }
@@ -45,7 +45,7 @@ mod.initPrototype = function () {
         if (stuck && movingLastTick) {
             if (!this.memory.stuckCount) this.memory.stuckCount = 0;
             this.memory.stuckCount++;
-            if (dareDevil && this.memory.stuckCount > 0) {
+            if (daredevil && this.memory.stuckCount > 0) {
                 this.memory.detourTicks = 5;
             }
             else if (this.memory.stuckCount >= 2) {
@@ -63,7 +63,7 @@ mod.initPrototype = function () {
 
         if (this.memory.detourTicks > 0) {
             this.memory.detourTicks--;
-            if (dareDevil) {
+            if (daredevil) {
                 ops.reusePath = 0;
             }
             else {
@@ -124,7 +124,7 @@ mod.initPrototype = function () {
     // maintainDistance=true means the chosen idle position will be within the same range or less.
     // targetPos and maintainDistance act as a pair, either pass neither (simply move off the road), or
     // pass both (move off the road while maintaining distance to target)
-    Creep.prototype.moveOffRoad = function (targetPos = this.pos) {
+    Creep.prototype.moveOffRoad = function (targetPos = this.pos, maintainDistance = false) {
         let offRoad = this.pos.lookForStructure(STRUCTURE_ROAD) === undefined;
         if (offRoad) return OK;
 

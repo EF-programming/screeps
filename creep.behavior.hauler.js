@@ -23,7 +23,7 @@ class Hauler {
             let storage = mission.storage;
             if (creep.pos.isNearTo(storage)) {
                 creep.transfer(storage, RESOURCE_ENERGY);
-                if (creep.ticksToLive < mission.analysis.distance * 2 + 5) {
+                if (creep.ticksToLive < mission.memory.analysis.distance * 2 + 5) {
                     creep.suicide();                // TODO: change this to recycle
                 }
             }

@@ -15,6 +15,7 @@ module.exports.loop = function () {
     for (let operation of operations) {
         operation.actions();
     }
+    operations[0].flag.memory = {};
 
     curSpawn = Game.spawns['Spawn1'];
     curSpawn.room.controller.activateSafeMode();

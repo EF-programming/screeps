@@ -2,24 +2,24 @@ let mod = {};
 module.exports = mod;
 mod.initPrototype = function () {
     Structure.prototype.isFull = function () {
-        if (this.hasOwnProperty("store")) {
+        if ("store" in this) {
             return _.sum(this.store) === this.storeCapacity;
         }
-        else if (this.hasOwnProperty("energy")) {
+        else if ("energy" in this) {
             return this.energy === this.energyCapacity;
         }
     }
     // resourceType arg is optional.
     Structure.prototype.getStoredAmount = function (resourceType) {
-        if (this.hasOwnProperty("store")) {
+        if ("store" in this) {
             if (resourceType === undefined) {
                 return _.sum(this.store);
             }
             else {
-                return target.store[resourceType];
+                return this.store[resourceType];
             }
         }
-        else if (target.hasOwnProperty("energy")) {
+        else if ("energy" in this) {
             return this.energy;
         }
     }

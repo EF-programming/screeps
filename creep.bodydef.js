@@ -27,6 +27,15 @@ class BodyDef {
             speed: SPEED_ROAD_1_TICK,
             speedIgnoreCarryParts: false
         }
+        this.guard = {
+            baseBody: [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, ATTACK],
+            multiBody: [CARRY], // 150
+            multiCount: function (specs) {
+                return 0;
+            },
+            speed: SPEED_PLAINS_1_TICK,
+            speedIgnoreCarryParts: false
+        }
         this.staticMinerLocal = { // Local means it is designed to mine in the room that it spawns in. Reflected by slow move speed.
             baseBody: [CARRY, WORK, WORK, WORK, WORK], // 550
             multiBody: [WORK],

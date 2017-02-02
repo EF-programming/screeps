@@ -1,4 +1,5 @@
 let Operation = require('operation');
+let GuardMission = require('mission.guard');
 let MiningMission = require('mission.mining');
 class MiningOperation extends Operation {
     constructor(flag) {
@@ -13,7 +14,7 @@ class MiningOperation extends Operation {
         //     this.addMission(new ScoutMission(this));
             return;
         }
-        //this.addMission(new GuardMission(this)); // if room isn't owned by you
+        this.addMission(new GuardMission(this)); // if room isn't owned by you
         for (let source of this.sources) {
             this.addMission(new MiningMission(this, source));
         }

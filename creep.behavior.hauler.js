@@ -26,6 +26,9 @@ class Hauler {
                 if (creep.ticksToLive < mission.memory.analysis.distance * 2 + 5) {
                     creep.suicide();                // TODO: change this to recycle
                 }
+                else {
+                    creep.blindMoveTo(mission.container);
+                }
             }
             else {
                 this.repairUnderfoot(creep);

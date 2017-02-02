@@ -84,7 +84,7 @@ mod.initPrototype = function () {
             // Take care of creep that might be in the way
             let occupier = position.lookFor(LOOK_CREEPS)[0];
             if (occupier) {
-                if (this.memory.roleName && occupier.memory.roleName) {
+                if (this.memory.roleName === occupier.memory.roleName) {
                     for (let resourceType in occupier.carry) { // This actually only transfers one resource type because only one transfer can be done per tick. But we don't know which resource the creep is holding, hence the for loop.
                         occupier.transfer(this, resourceType);
                     }
@@ -109,7 +109,7 @@ mod.initPrototype = function () {
         let range = this.pos.getRangeTo(pos);
 
         if (range < desiredRange) {
-            this.moveOffRoad(pos);
+            this.moveOffRoad();
         }
         else if (range === desiredRange) {
             this.moveOffRoad(pos, true);
@@ -152,18 +152,6 @@ mod.initPrototype = function () {
         return this.blindMoveTo(targetPos);
     };
     Object.defineProperties(Creep.prototype, {
-        taskTarget: {
-            get: function () {
-                if (this._taskTarget === undefined) {
-                    this._taskTarget = Game.getObjectById(this.memory.taskTargetId);
-                }
-                return this._taskTarget;
-            },
-            set: function (value) {
-                this._taskTarget = value;
-                this.memory.taskTargetId = value.id;
-            }
-        },
         spaceFree: {
             get: function () {
                 if (this._spaceFree === undefined) {

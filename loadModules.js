@@ -27,6 +27,7 @@ mod.loadModules = function () {
         },
         behaviors: {
             hauler: loadInstanceOfClass(require('creep.behavior.hauler')),
+            guard: loadInstanceOfClass(require('creep.behavior.guard')),
             staticMiner: loadInstanceOfClass(require('creep.behavior.staticMiner')),
             //worker: require('creep.behavior.worker')
         }

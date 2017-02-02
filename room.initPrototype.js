@@ -16,7 +16,7 @@ mod.initPrototype = function () {
                 let filteredHostiles = [];
                 for (let hostile of hostiles) {
                     let username = hostile.owner.username;
-                    let isEnemy = helper.checkEnemy(username, this.name);
+                    let isEnemy = checkEnemy(username, this.name);
                     if (isEnemy) {
                         filteredHostiles.push(hostile);
                     }

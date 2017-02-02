@@ -4,7 +4,7 @@ class GuardMission extends Mission {
     constructor(operation) {
         let missionName = operation.operationName + "(" + MISSION_GUARD + ")";
         super(operation, missionName);
-        this.idlePosition = Game.rooms[this.roomName].find(FIND_SOURCES)[0];
+        this.idlePosition = Game.rooms[this.roomName].find(FIND_SOURCES)[1].pos;
     }
     initMission() {
         this.spawn = this.operation.findSpawn();

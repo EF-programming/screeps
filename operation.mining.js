@@ -12,8 +12,8 @@ class MiningOperation extends Operation {
     }
 
     initOperation() {
+        this.addMission(new ScoutMission(this));
         if (!this.hasVision) {
-            this.addMission(new ScoutMission(this));
             return;
         }
         if (this.room.hostiles > 0) { // If there are hostiles we need to halt mining operations until they're gone

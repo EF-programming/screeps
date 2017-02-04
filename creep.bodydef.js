@@ -1,8 +1,9 @@
+// Change body sizes to be based on room.energyCapacity instead of RCL. With option to base on room.energyAvailable
 class BodyDef {
     constructor() {
         this.hauler = {
             baseBody: [WORK, CARRY],
-            multiBody: [CARRY], // 150
+            multiBody: [CARRY],
             multiCount: function (specs) {
                 if (specs[CARRY]) {
                     return specs[CARRY];
@@ -14,11 +15,11 @@ class BodyDef {
                     case 3:
                         return 4;
                     case 4:
-                        return 6;
+                        return 12;
                     case 5:
-                        return 8;
-                    case 6:
                         return 15;
+                    case 6:
+                        return 27;
                     case 7:
                     case 8:
                         return 29;
@@ -29,7 +30,25 @@ class BodyDef {
         }
         this.guard = {
             baseBody: [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, ATTACK],
-            multiBody: [CARRY], // 150
+            multiBody: [ATTACK],
+            multiCount: function (specs) {
+                return 0;
+            },
+            speed: SPEED_PLAINS_1_TICK,
+            speedIgnoreCarryParts: false
+        }
+        this.reserver = {
+            baseBody: [CLAIM, CLAIM],
+            multiBody: [],
+            multiCount: function (specs) {
+                return 0;
+            },
+            speed: SPEED_PLAINS_1_TICK,
+            speedIgnoreCarryParts: false
+        }
+        this.scout = {
+            baseBody: [MOVE],
+            multiBody: [],
             multiCount: function (specs) {
                 return 0;
             },
@@ -51,7 +70,7 @@ class BodyDef {
                     case 6:
                     case 7:
                     case 8:
-                        return 1; // 1 for now but can be 2
+                        return 2; // 1 for now but can be 2
                 }
             },
             speed: SPEED_ROAD_2_TICKS,
@@ -111,7 +130,10 @@ class BodyDef {
                         return rcl - 1;
                     case 5:
                     case 6:
-                        return 3;
+                        return 4;
+                    case 7:
+                    case 8:
+                        return 5;
                 }
             },
             speed: SPEED_ROAD_1_TICK,
@@ -158,6 +180,9 @@ class BodyDef {
     // roundUp = true will round the number of move parts up to the nearest integer, which is the necessary amount to move at the requested speed.
     getMovePartsAmount(body, speed, ignoreCarry, roundUp = false) {
         let partCount = body.length;
+        if (partCount === 1 && body[0] === MOVE) {
+            return 0;
+        }
         if (ignoreCarry) {
             for (let i = 0; i < body.length; i++) {
                 if (body[i] === CARRY) {

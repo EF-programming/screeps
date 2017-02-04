@@ -4,18 +4,24 @@ let loophelper = require('loophelper');
 module.exports.loop = function () {
     // State of the empire, for the current tick, is cached in Game.cache.
     Game.cache = { structures: {}, hostiles: {} };
-
+    // State of the empire over many ticks is stored in memory at Memory.empire
+    if (!Memory.empire) {
+        Memory.empire = {};
+    }
     let operations = loophelper.getOperations();
     for (let operation of operations) {
         operation.init();
     }
+    // Right before headCount it might be good to iterate through Game.creeps and assign each creep to the operation it belongs to. Then operations need only to check their assigned creeps instead of all.
     for (let operation of operations) {
         operation.headCount();
     }    
     for (let operation of operations) {
         operation.actions();
     }
-    operations[0].flag.memory = {};
+    for (let operation of operations) {
+        operation.finalize();
+    }
 
     curSpawn = Game.spawns['Spawn1'];
     curSpawn.room.controller.activateSafeMode();

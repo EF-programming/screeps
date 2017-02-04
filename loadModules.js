@@ -28,6 +28,8 @@ mod.loadModules = function () {
         behaviors: {
             hauler: loadInstanceOfClass(require('creep.behavior.hauler')),
             guard: loadInstanceOfClass(require('creep.behavior.guard')),
+            reserver:loadInstanceOfClass(require('creep.behavior.reserver')),
+            scout: loadInstanceOfClass(require('creep.behavior.scout')),
             staticMiner: loadInstanceOfClass(require('creep.behavior.staticMiner')),
             //worker: require('creep.behavior.worker')
         }

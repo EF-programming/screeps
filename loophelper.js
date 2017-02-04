@@ -7,21 +7,18 @@ mod.getOperations = function () {
         let operation;
         let operationName;
         if (flag.name.startsWith(opClass.operationTypeName)) { // Existing operation
-            operationName = flag.name;
+            return new opClass(flag);
         }
         else if (flag.name.startsWith("Flag")) { // Newly placed operation, create a name for it.
             operationName = opClass.operationTypeName + "@" + flag.pos.roomName;
-            let flagPos = flag.pos;
-            let flagColor = flag.color;
-            let flagSecondaryColor = flag.color;
-            flag.pos.createFlag(operationName, flag.color, flag.flagSecondaryColor);
+            let newFlagPos = new RoomPosition(flag.pos.x, flag.pos.y, flag.pos.roomName);
+            newFlagPos.createFlag(operationName, flag.color, flag.flagSecondaryColor);
             flag.remove();
-            flag = Game.flags[operationName];
+            return undefined; // Wait 1 tick for the new flag to be created.
         }
         else { // This flag is unrelated to an operation.
             return undefined;
         }
-        return new opClass(flag);
     }
 
     let operations = [];

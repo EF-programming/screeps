@@ -5,6 +5,8 @@ class Mission {
         this.missionName = missionName;
         this.roomName = operation.roomName;
         this.hasVision = operation.hasVision;
+        this.flag = operation.flag;
+        this.room = operation.flag.room;
         if (!operation.memory[this.missionName]) {
             operation.memory[this.missionName] = {};
         }
@@ -32,6 +34,7 @@ class Mission {
     // bodyspecs: Combined with bodydef to describe the bodyparts the creeps should spawn with (check creep.bodydef class for details)
     // opts: Optional args
     // --prespawn:number Start spawning by this many extra ticks in advance on top of spawnTime prespawn (ex: travel time ticks)
+    // --noprespawn:bool Disable prespawn entirely.
     // --nospawn:bool Do not spawn new creeps if population below target. False by default.
     // --flexbudget:bool Allow creating creeps with smaller bodies if spawn does not have enough energy. False by default.
     getMissionCreeps(roleName, amount, bodydef, bodyspecs, opts) {
@@ -53,9 +56,12 @@ class Mission {
                 if (!creep.spawning) {
                     creeps.push(creep);
                 }
-                let prespawnTicks = creep.body.length * 3;
-                if (opts.prespawn !== undefined) {
-                    prespawnTicks += opts.prespawn;
+                let prespawnTicks = 0;
+                if (!opts.noprespawn) {
+                    prespawnTicks = creep.body.length * CREEP_SPAWN_TIME; // CREEP_SPAWN_TIME is the amount of ticks for 1 part
+                    if (opts.prespawn !== undefined) {
+                        prespawnTicks += opts.prespawn;
+                    }
                 }
                 if (!creep.ticksToLive || creep.ticksToLive > prespawnTicks) {
                     goodCreeps++;
@@ -70,7 +76,7 @@ class Mission {
         // Finished collecting living creeps. Now spawn/prespawn creeps if population is too small.
         if (goodCreeps < amount) { // Only spawns 1 at a time for now.
             let creepName = roleName + Math.floor(Math.random() * 100) + "_" + this.missionName; // Will rarely fail because of math.random creating an existing name but it's a very low priority issue to fix.
-            let body = Creep.BodyDef.getBody(bodydef, bodyspecs); // Not implementing variable budget option yet
+            let body = Creep.BodyDef.getBody(bodydef, bodyspecs);
             if (this.spawn.canCreateCreep(body, creepName) === OK) {
                 this.spawn.createCreep(body, creepName, { roleName: roleName });
                 this.memory.creeps[roleName].push(creepName);
@@ -78,6 +84,6 @@ class Mission {
         }
         return creeps;
     }
-
+    finalizeMission() { } // Declared here to not force every mission to implement this method, because not all of them need it.
 }
 module.exports = Mission;

@@ -7,6 +7,10 @@ class Hauler {
         if (creep.carry.energy === 0) { // If creep has no energy, move near container, and wait until the container contains enough to fill the creep's inventory, then withdraw.
             let container = mission.container;
             if (creep.pos.isNearTo(container)) {
+                if (creep.ticksToLive < mission.memory.analysis.distance) { // If haulers are programmed to pick up dropped energy, this isn't needed.
+                    creep.suicide();
+                    return;
+                }
                 if (container.getStoredAmount(RESOURCE_ENERGY) > creep.carryCapacity - creep.getStoredAmount()) {
                     creep.withdraw(container, RESOURCE_ENERGY);
                     creep.blindMoveTo(mission.storage);
@@ -27,6 +31,7 @@ class Hauler {
                     creep.suicide();                // TODO: change this to recycle
                 }
                 else {
+                    // If hauler has 1 ticks to live, it should register a note to pick up the energy
                     creep.blindMoveTo(mission.container);
                 }
             }

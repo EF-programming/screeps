@@ -9,7 +9,7 @@ class Guard {
         else {
             if (creep.room.hostiles.length > 0) {
                 let enemy = creep.room.hostiles[0];
-                creep.moveTo(enemy);
+                creep.moveTo(enemy, {maxRooms: 1});
                 creep.attack(enemy);
             }
             else {

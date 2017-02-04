@@ -25,15 +25,26 @@ class MiningMission extends Mission {
         if (!this.memory.analysis) {
             this.memory.analysis = this.calculateHaulingStats();
         }
-        // maybe determine if room is too dangerous to send miners & spawn new ones. Check if any 
-        // room on the way is in a state of "under assault" and do not execute the mission if so.
+        this.dangerLevel = this.room.hostiles.length;
     }
     headCount() {
+        let miners = 1;
+        let haulers = this.memory.analysis.numOfHaulers;
+        if (this.dangerLevel > 0) {
+            miners = 0;
+            haulers = 0;
+        }
         // Maybe check if spawn is in same room as source and use that to decide the movespeed of the miner
-        this.miners = this.getMissionCreeps("miner", 1, Creep.BodyDef.staticMinerRemote, { rcl: this.spawn.room.controller.level }, { prespawn: this.memory.distance });
-        this.haulers = this.getMissionCreeps("hauler", this.memory.analysis.numOfHaulers, Creep.BodyDef.hauler, { [CARRY]: this.memory.analysis.carryPartsPerHauler }, { prespawn: 45 }) // Find a way to calc prespawn time better
+        this.miners = this.getMissionCreeps("miner", miners, Creep.BodyDef.staticMinerRemote, { rcl: this.spawn.room.controller.level }, { prespawn: this.memory.analysis.distance });
+        if (this.miners.length === 0) {
+            haulers = 0;
+        }
+        this.haulers = this.getMissionCreeps("hauler", haulers, Creep.BodyDef.hauler, { [CARRY]: this.memory.analysis.carryPartsPerHauler - 1 }, { prespawn: 45 }) // Find a way to calc prespawn time better
     }
     actions() {
+        if (this.dangerLevel > 0) {
+            return;
+        }
         for (let creep of this.miners) {
             Creep.behaviors.staticMiner.run(creep, this);
         }
@@ -54,7 +65,7 @@ class MiningMission extends Mission {
         let result = PathFinder.search(this.source.pos, { pos: this.storage.pos, range: 1 });
         analysis.distance = result.path.length;
         let minePerTick = this.source.energyCapacity / ENERGY_REGEN_TIME;
-        let maxSize = Creep.BodyDef.hauler.multiCount({rcl: this.spawn.room.controller.level}) + 1;
+        let maxSize = Creep.BodyDef.hauler.multiCount({ rcl: this.spawn.room.controller.level }) + 1;
         let maxHaulPerTickPerHauler = Math.floor((maxSize * CARRY_CAPACITY) / (analysis.distance * 2));
         let numOfHaulers = Math.ceil(minePerTick / maxHaulPerTickPerHauler); // The minimum number of haulers needed to haul the energy.
         let avgHaulPerTickPerHauler = minePerTick / numOfHaulers; // Distribute the energy load evenly between haulers.

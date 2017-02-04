@@ -11,6 +11,9 @@ class Operation {
         this.memory = flag.memory;
         this.missions = [];
         this.hasVision = flag.room ? true : false; // .room is undefined when no vision.
+        if (this.hasVision) {
+            this.room = flag.room;
+        }
     }
     init() {
         // initOperation populates the missions list.
@@ -31,6 +34,11 @@ class Operation {
     actions() {
         for (let mission of this.missions) {
             mission.actions();
+        }
+    }
+    finalize() {
+        for (let mission of this.missions) {
+            mission.finalizeMission();
         }
     }
     addMission(mission) {

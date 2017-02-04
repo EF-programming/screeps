@@ -10,7 +10,7 @@ class ReserveMission extends Mission {
     }
     headCount() {
         let reserversNeeded = 0;
-        if (!this.memory.nextReserverAt || Game.time > this.memory.nextReserverAt) {
+        if (!this.memory.nextReserverAt || Game.time >= this.memory.nextReserverAt) {
             reserversNeeded = 1;
         }
         this.reservers = this.getMissionCreeps("reserver", reserversNeeded, Creep.BodyDef.reserver, { rcl: this.spawn.room.controller.level }, { noprespawn: true });
@@ -23,7 +23,7 @@ class ReserveMission extends Mission {
     finalizeMission() {
         if (this.hasVision) {
             // Sends a reserver whenever the reserve ticks on the controller are below 3000.
-            if (this.room.reservation) {
+            if (this.room.controller.reservation) {
                 this.memory.nextReserverAt = Game.time + (this.room.controller.reservation.ticksToEnd - 3000);
             }
             else {

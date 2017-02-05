@@ -1,10 +1,12 @@
+let Behavior = require('creep.behavior');
 /*
 staticMiner: Creep is assigned a source (can be in a different room). Moves
 to the source and mines it forever. Drops energy, preferably into a given container.
 */
-class StaticMiner {
+class StaticMiner extends Behavior {
     // The findTask function can assume that all the state necessary for determining the next task has been assigned in assignBehavior
     run(creep, mission) {
+        if (this.avoidDangerRooms(creep, mission)) { return; }
         let source = mission.source;
         let container = mission.container;
         if (creep.pos.isEqualTo(container)) { // Mine

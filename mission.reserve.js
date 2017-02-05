@@ -22,9 +22,9 @@ class ReserveMission extends Mission {
     }
     finalizeMission() {
         if (this.hasVision) {
-            // Sends a reserver whenever the reserve ticks on the controller are below 3000.
+            // Sends a reserver whenever the reserve ticks on the controller are below 4000.
             if (this.room.controller.reservation) {
-                this.memory.nextReserverAt = Game.time + (this.room.controller.reservation.ticksToEnd - 3000);
+                this.memory.nextReserverAt = Game.time + (this.room.controller.reservation.ticksToEnd - 4000);
             }
             else {
                 this.memory.nextReserverAt = Game.time;

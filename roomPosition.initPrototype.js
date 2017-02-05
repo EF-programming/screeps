@@ -67,6 +67,9 @@ mod.initPrototype = function () {
         }
         return false;
     };
+    RoomPosition.prototype.isNearExit = function (range) {
+        return this.x - range <= 0 || this.x + range >= 49 || this.y - range <= 0 || this.y + range >= 49;
+    };
     // structureType is a STRUCTURE_ string constant
     RoomPosition.prototype.lookForStructure = function (structureType) {
         let structures = this.lookFor(LOOK_STRUCTURES);

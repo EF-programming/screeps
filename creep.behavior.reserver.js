@@ -1,8 +1,10 @@
+let Behavior = require('creep.behavior');
 /*
 reserver: Creep goes to a room and reserves the controller.
 */
-class Reserver {
+class Reserver extends Behavior {
     run(creep, mission) {
+        if (this.avoidDangerRooms(creep, mission)) { return; }
         if (creep.room.name !== mission.roomName) {
             let destination;
             if (mission.hasVision) {

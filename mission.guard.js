@@ -11,14 +11,7 @@ class GuardMission extends Mission {
     }
     headCount() {
         let guardsNeeded = 0;
-        if (this.memory.lastSeenHostile === undefined) {
-            this.memory.lastSeenHostile = 1;
-        }
-        if (Game.rooms[this.roomName].hostiles.length > 0) {
-            this.memory.lastSeenHostile = Game.time;
-            guardsNeeded = 1;
-        }
-        if (Game.time - this.memory.lastSeenHostile > 3000) {
+        if (((Memory.empire[this.roomName] || {}).danger || {}).hostileCount === 1) {
             guardsNeeded = 1;
         }
         this.guards = this.getMissionCreeps("guard", guardsNeeded, Creep.BodyDef.guard, { rcl: 8 });

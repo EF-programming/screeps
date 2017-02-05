@@ -133,6 +133,7 @@ mod.initPrototype = function () {
             let currentRange = this.pos.getRangeTo(targetPos);
             positions = _.filter(positions, p => p.getRangeTo(targetPos) <= currentRange);
         }
+        positions = _.filter(positions, p => !p.isNearExit(0));
         let swampPosition;
         for (let position of positions) { // Picks the first "plains" found, otherwise picks "swamp", otherwise blindMoves to targetPos.
             if (position.lookForStructure(STRUCTURE_ROAD)) continue;

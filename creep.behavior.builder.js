@@ -1,8 +1,9 @@
+let Behavior = require('creep.behavior');
 /*
 builder: Creep goes to a room and builds construction sites. Takes energy
 from storage if there is one, otherwise harvests from a source.
 */
-class Builder {
+class Builder extends Behavior {
     run(creep, mission) {
         if (creep.room.name !== mission.flag.pos.roomName) {
             creep.blindMoveTo(mission.flag.pos);

@@ -1,17 +1,23 @@
-// Currently not used.
 class Behavior {
-    run = function (creep) {
-        if (!creep.memory.taskName || !Creep.tasks[creep.memory.taskName].isStillValid(creep)) {
-            this.findTask(creep);
+    // Avoids dangerous rooms by moving to the spawn room, then idling offroad.
+    avoidDangerRooms(creep, mission) {
+        if ((mission.dangerPeriod && creep.room.name !== mission.roomName) ||
+            (creep.room.dangerPeriod && creep.room.name === mission.spawn.room.name)) {
+            if (creep.isNearExit(2)) {
+                creep.blindMoveTo(mission.spawn.pos);
+                return true;
+            }
+            else {
+                creep.moveOffRoad();
+                return true;
+            }
         }
-        this.doTask(creep);
-    }
-    doTask(creep) {
-        let taskFinished = Creep.tasks[creep.memory.taskName].doTask(creep);
-        if (taskFinished) {
-            this.findTask(creep);
-            this.doTask(creep);
+        // Does not work well if there is a dangerous room between the mission room and the spawn room (will move back and forth on the edge)
+        else if (creep.room.dangerPeriod) { 
+            creep.blindMoveTo(mission.spawn.pos);
+            return true;
         }
+        return false;
     }
 }
-modules.exports = Behavior;
+module.exports = Behavior;

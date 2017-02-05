@@ -25,7 +25,7 @@ class MiningMission extends Mission {
         if (!this.memory.analysis) {
             this.memory.analysis = this.calculateHaulingStats();
         }
-        this.dangerLevel = this.room.hostiles.length;
+        this.dangerPeriod = this.room.dangerPeriod;
     }
     headCount() {
         let miners = 1;

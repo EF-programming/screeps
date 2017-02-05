@@ -1,10 +1,12 @@
+let Behavior = require('creep.behavior');
 /*
 hauler: Creep moves to a container to take energy from it, then moves to a different
 container or storage to deposit that energy.
 */
-class Hauler {
+class Hauler extends Behavior {
     run(creep, mission) {
         if (creep.carry.energy === 0) { // If creep has no energy, move near container, and wait until the container contains enough to fill the creep's inventory, then withdraw.
+            if (this.avoidDangerRooms(creep, mission)) { return; }
             let container = mission.container;
             if (creep.pos.isNearTo(container)) {
                 if (creep.ticksToLive < mission.memory.analysis.distance) { // If haulers are programmed to pick up dropped energy, this isn't needed.

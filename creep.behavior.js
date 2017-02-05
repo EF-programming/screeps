@@ -3,7 +3,7 @@ class Behavior {
     avoidDangerRooms(creep, mission) {
         if ((mission.dangerPeriod && creep.room.name !== mission.roomName) ||
             (creep.room.dangerPeriod && creep.room.name === mission.spawn.room.name)) {
-            if (creep.isNearExit(2)) {
+            if (creep.pos.isNearExit(2)) {
                 creep.blindMoveTo(mission.spawn.pos);
                 return true;
             }

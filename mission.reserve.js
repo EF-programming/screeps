@@ -7,6 +7,7 @@ class ReserveMission extends Mission {
     }
     initMission() {
         this.spawn = this.operation.findSpawn();
+        this.dangerPeriod = this.room.dangerPeriod;
     }
     headCount() {
         let reserversNeeded = 0;

@@ -10,7 +10,10 @@ class Guard extends Behavior {
         else {
             if (creep.room.hostiles.length > 0) {
                 let enemy = creep.room.hostiles[0];
-                creep.moveTo(enemy, {maxRooms: 1});
+                creep.moveTo(enemy, { maxRooms: 1 });
+                if (creep.pos.inRangeTo(enemy, 3)) {
+                    creep.rangedAttack(enemy);
+                }
                 creep.attack(enemy);
             }
             else {

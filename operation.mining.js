@@ -12,14 +12,15 @@ class MiningOperation extends Operation {
     }
     initOperation() {
         this.addMission(new ScoutMission(this));
-        if (!this.flag.room.controller || !this.flag.room.controller.my) {
-            // check if room is surrounded by safe rooms
+        if (!this.hasVision || (!this.flag.room.controller || !this.flag.room.controller.my)) {
             this.addMission(new GuardMission(this)); // if room isn't owned by you
         }
         if (!this.hasVision) {
             return;
         }
         if (this.room.hostiles.length > 0) {
+            Memory.empire[this.roomName] = {};
+            Memory.empire[this.roomName].danger = {};
             Memory.empire[this.roomName].danger.hostileCount = this.room.hostiles.length; // maybe replace with threat level
             Memory.empire[this.roomName].danger.period = Game.time + this.room.hostiles[0].ticksToLive;
             // some system should analyze the danger level and mark it as salvageable or unsalvageable. If it's unsalvageable, certain mission creeps should go recycle themselves if their ttl is too low.
@@ -27,10 +28,9 @@ class MiningOperation extends Operation {
         else if (this.room.danger) {
             delete Memory.empire[this.roomName].danger;
         }
-        else if (Memory.empire[this.roomName])
-            if (this.flag.room.controller && !this.flag.room.controller.my) {
-                this.addMission(new ReserveMission(this));
-            }
+        if (this.flag.room.controller && !this.flag.room.controller.my) {
+            this.addMission(new ReserveMission(this));
+        }
         for (let source of this.sources) {
             this.addMission(new MiningMission(this, source));
         }

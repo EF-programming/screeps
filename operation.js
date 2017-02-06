@@ -16,11 +16,21 @@ class Operation {
         }
     }
     init() {
-        // initOperation populates the missions list.
-        this.initOperation();
-
+        try {
+            this.initOperation();
+        }
+        catch (e) {
+            console.log(`Error caught in iniOperation, operation: ${this.operationName}`);
+            console.log(e.stack);
+        }
         for (let mission of this.missions) {
-            mission.initMission();
+            try {
+                mission.initMission();
+            }
+            catch (e) {
+                console.log(`Error caught in initMission, operation: ${this.operationName}, mission: ${mission.missionName}`);
+                console.log(e.stack);
+            }
         }
     }
     // Find creeps belonging to missions and spawn any additional needed.
@@ -28,17 +38,35 @@ class Operation {
         // Check whether it's better to let each mission's headcount iterate all of Game.creeps or
         // to first find all creeps for this operation and cache them, and let missions iterate that.
         for (let mission of this.missions) {
-            mission.headCount();
+            try {
+                mission.headCount();
+            }
+            catch (e) {
+                console.log(`Error caught in headCount, operation: ${this.operationName}, mission: ${mission.missionName}`);
+                console.log(e.stack);
+            }
         }
     }
     actions() {
         for (let mission of this.missions) {
-            mission.actions();
+            try {
+                mission.actions();
+            }
+            catch (e) {
+                console.log(`Error caught in missionActions, operation: ${this.operationName}, mission: ${mission.missionName}`);
+                console.log(e.stack);
+            }
         }
     }
     finalize() {
         for (let mission of this.missions) {
-            mission.finalizeMission();
+            try {
+                mission.finalizeMission();
+            }
+            catch (e) {
+                console.log(`Error caught in finalizeMission, operation: ${this.operationName}, mission: ${mission.missionName}`);
+                console.log(e.stack);
+            }
         }
     }
     addMission(mission) {

@@ -112,26 +112,31 @@ mod.initPrototype = function () {
             this.moveOffRoad();
         }
         else if (range === desiredRange) {
-            this.moveOffRoad(pos, true);
+            this.moveOffRoad(pos);
         }
         else {
             this.blindMoveTo(pos);
         }
     }
-    // Taken from bonzAI (changed to make maintainDistance=false not favor closer spots)
+    // Taken from bonzAI and modified considerably.
     // Creep immediately moves off the road. Regardless of the distance to targetPos, the creep moves off the road and if successful, the goal is accomplished.
-    // targetPos is the tile near which the creep should idle. Optional, if not passed will use own pos.
-    // maintainDistance=true means the chosen idle position will be within the same range or less.
-    // targetPos and maintainDistance act as a pair, either pass neither (simply move off the road), or
-    // pass both (move off the road while maintaining distance to target)
-    Creep.prototype.moveOffRoad = function (targetPos = this.pos, maintainDistance = false) {
+    // targetPos: Optional. If passed, creep will maintain range to targetPos when moving off road. If not passed creep simply moves off road.
+    // targetPos2: Optional. Second position to maintain range to.
+    Creep.prototype.moveOffRoad = function (targetPos, targetPos2) {
         let offRoad = this.pos.lookForStructure(STRUCTURE_ROAD) === undefined;
         if (offRoad) return OK;
 
         let positions = this.pos.openAdjacentSpots();
-        if (maintainDistance) {
+        if (targetPos) {
             let currentRange = this.pos.getRangeTo(targetPos);
-            positions = _.filter(positions, p => p.getRangeTo(targetPos) <= currentRange);
+            let filteredPositions = _.filter(positions, p => p.getRangeTo(targetPos) <= currentRange);
+            if (targetPos2) {
+                currentRange = this.pos.getRangeTo(targetPos2);
+                let filteredPositions2 = _.filter(filteredPositions, p => p.getRangeTo(targetPos2) <= currentRange);
+                if (filteredPositions.length > 0) {
+                    filteredPositions = filteredPositions2;
+                }
+            }
         }
         positions = _.filter(positions, p => !p.isNearExit(0));
         let swampPosition;
@@ -149,7 +154,7 @@ mod.initPrototype = function () {
         if (swampPosition) {
             return this.move(this.pos.getDirectionTo(swampPosition));
         }
-
+        if (!targetPos) { targetPos = this.pos; }
         return this.blindMoveTo(targetPos);
     };
     Object.defineProperties(Creep.prototype, {

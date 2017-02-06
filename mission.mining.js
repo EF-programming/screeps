@@ -30,7 +30,11 @@ class MiningMission extends Mission {
     headCount() {
         let miners = 1;
         let haulers = this.memory.analysis.numOfHaulers;
-        if (this.dangerLevel > 0) {
+        if (this.dangerPeriod > 0) {
+            miners = 0;
+            haulers = 0;
+        }
+        if (this.storage.getStoredAmount() > 950000) {
             miners = 0;
             haulers = 0;
         }
@@ -42,9 +46,6 @@ class MiningMission extends Mission {
         this.haulers = this.getMissionCreeps("hauler", haulers, Creep.BodyDef.hauler, { [CARRY]: this.memory.analysis.carryPartsPerHauler - 1 }, { prespawn: 45 }) // Find a way to calc prespawn time better
     }
     actions() {
-        if (this.dangerLevel > 0) {
-            return;
-        }
         for (let creep of this.miners) {
             Creep.behaviors.staticMiner.run(creep, this);
         }

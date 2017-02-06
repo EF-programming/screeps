@@ -18,7 +18,7 @@ class Hauler extends Behavior {
                     creep.blindMoveTo(mission.storage);
                 }
                 else {
-                    creep.moveOffRoad(container, true);
+                    creep.moveOffRoad(container);
                 }
             }
             else {

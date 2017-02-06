@@ -14,6 +14,9 @@ class ReserveMission extends Mission {
         if (!this.memory.nextReserverAt || Game.time >= this.memory.nextReserverAt) {
             reserversNeeded = 1;
         }
+        if (this.dangerPeriod > 0) {
+            reserversNeeded = 0;
+        }
         this.reservers = this.getMissionCreeps("reserver", reserversNeeded, Creep.BodyDef.reserver, { rcl: this.spawn.room.controller.level }, { noprespawn: true });
     }
     actions() {

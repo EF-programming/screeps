@@ -18,7 +18,7 @@ class Reserver extends Behavior {
         }
         // In the same room as the controller
         if (creep.pos.isNearTo(creep.room.controller)) {
-            creep.moveOffRoad(creep.room.controller.pos, true);
+            creep.moveOffRoad(creep.room.controller.pos);
             creep.reserveController(creep.room.controller);
         }
         else {

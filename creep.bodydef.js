@@ -29,7 +29,7 @@ class BodyDef {
             speedIgnoreCarryParts: false
         }
         this.guard = {
-            baseBody: [TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK],
+            baseBody: [TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK],
             multiBody: [ATTACK],
             multiCount: function (specs) {
                 return 0;

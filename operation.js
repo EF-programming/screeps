@@ -20,7 +20,7 @@ class Operation {
             this.initOperation();
         }
         catch (e) {
-            console.log(`Error caught in iniOperation, operation: ${this.operationName}`);
+            console.log(`Error caught in initOperation, operation: ${this.operationName}`);
             console.log(e.stack);
         }
         for (let mission of this.missions) {

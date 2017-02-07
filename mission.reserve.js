@@ -7,15 +7,16 @@ class ReserveMission extends Mission {
     }
     initMission() {
         this.spawn = this.operation.findSpawn();
-        this.dangerPeriod = this.room.dangerPeriod;
+        this.dangerPeriod = ((Memory.empire[this.roomName] || {}).danger || {}).period || 0;
     }
     headCount() {
         let reserversNeeded = 0;
-        if (!this.memory.nextReserverAt || Game.time >= this.memory.nextReserverAt) {
+        if (this.hasVision &&
+            this.room.controller &&
+            !this.room.controller.my &&
+            (!this.room.controller.reservation || this.room.controller.reservation.ticksToEnd < 4000) &&
+            this.dangerPeriod === 0) {
             reserversNeeded = 1;
-        }
-        if (this.dangerPeriod > 0) {
-            reserversNeeded = 0;
         }
         this.reservers = this.getMissionCreeps("reserver", reserversNeeded, Creep.BodyDef.reserver, { rcl: this.spawn.room.controller.level }, { noprespawn: true });
     }
@@ -24,16 +25,16 @@ class ReserveMission extends Mission {
             Creep.behaviors.reserver.run(creep, this);
         }
     }
-    finalizeMission() {
-        if (this.hasVision) {
-            // Sends a reserver whenever the reserve ticks on the controller are below 4000.
-            if (this.room.controller.reservation) {
-                this.memory.nextReserverAt = Game.time + (this.room.controller.reservation.ticksToEnd - 4000);
-            }
-            else {
-                this.memory.nextReserverAt = Game.time;
-            }
-        }
-    }
+    // finalizeMission() {
+    //     if (this.hasVision) {
+    //         // Sends a reserver whenever the reserve ticks on the controller are below 4000.
+    //         if (this.room.controller.reservation) {
+    //             this.memory.nextReserverAt = Game.time + (this.room.controller.reservation.ticksToEnd - 4000);
+    //         }
+    //         else {
+    //             this.memory.nextReserverAt = Game.time;
+    //         }
+    //     }
+    // }
 }
 module.exports = ReserveMission;

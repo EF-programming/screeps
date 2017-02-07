@@ -3,40 +3,44 @@ let Mission = require('mission');
 // 1. Send one miner to mine a source. Miner builds container at the source.
 // 2. Send haulers to bring back energy mined by miner.
 // 3. Make a creep build and maintain a road between the source and storage.
-// If there is no vision, mining mission does not get created and none of the code in this class is executed,
-// therefore we can rely on there being vision for this code.
 // Member variables: source, container, storage, analysis, miners, haulers.
 class MiningMission extends Mission {
-    constructor(operation, source) {
-        let missionName = operation.operationName + "(" + MISSION_MINING + perfectHashTwoInts(source.pos.x, source.pos.y) + ")";
+    constructor(operation, sourcePos) {
+        let missionName = operation.operationName + "(" + MISSION_MINING + perfectHashTwoInts(sourcePos.x, sourcePos.y) + ")";
         super(operation, missionName);
-        this.source = source;
+        if (this.hasVision) {
+            this.source = sourcePos.lookFor(LOOK_SOURCES)[0];
+        }
     }
     initMission() {
-        this.spawn = this.operation.findSpawn();
+        this.dangerPeriod = ((Memory.empire[this.roomName] || {}).danger || {}).period || 0;
         // find storage.
         // Hardcoded, assumes storage exists.
         let room = Game.flags[this.roomName].room;
         this.storage = room.storage;
-
+        this.spawn = this.operation.findSpawn();
+        if (!this.hasVision) {
+            return;
+        }
         // find/place container
         this.container = this.findContainer(); // TODO: if the container doesn't exist we're screwed
 
         if (!this.memory.analysis) {
             this.memory.analysis = this.calculateHaulingStats();
         }
-        this.dangerPeriod = this.room.dangerPeriod;
     }
     headCount() {
-        let miners = 1;
-        let haulers = this.memory.analysis.numOfHaulers;
-        if (this.dangerPeriod > 0) {
+        let miners = 0;
+        let haulers = 0;
+        if (!this.hasVision ||
+            this.dangerPeriod > 0 ||
+            this.storage.getStoredAmount() > 950000) {
             miners = 0;
             haulers = 0;
         }
-        if (this.storage.getStoredAmount() > 950000) {
-            miners = 0;
-            haulers = 0;
+        else {
+            miners = 1;
+            haulers = this.memory.analysis.numOfHaulers;
         }
         // Maybe check if spawn is in same room as source and use that to decide the movespeed of the miner
         this.miners = this.getMissionCreeps("miner", miners, Creep.BodyDef.staticMinerRemote, { rcl: this.spawn.room.controller.level }, { prespawn: this.memory.analysis.distance });

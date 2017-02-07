@@ -7,6 +7,10 @@ class StaticMiner extends Behavior {
     // The findTask function can assume that all the state necessary for determining the next task has been assigned in assignBehavior
     run(creep, mission) {
         if (this.avoidDangerRooms(creep, mission)) { return; }
+        if (!mission.hasVision) {
+            creep.moveOffRoad();
+            return;
+        }
         let source = mission.source;
         let container = mission.container;
         if (creep.pos.isEqualTo(container)) { // Mine

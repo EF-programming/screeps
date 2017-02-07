@@ -2,23 +2,33 @@ require('loadModules').loadModules();
 let loophelper = require('loophelper');
 
 module.exports.loop = function () {
+    console.log(`Start: ${Game.cpu.getUsed()}`);
     // State of the empire, for the current tick, is cached in Game.cache.
     Game.cache = { structures: {}, hostiles: {} };
     // State of the empire over many ticks is stored in memory at Memory.empire
     if (!Memory.empire) {
         Memory.empire = {};
     }
+    for (let roomName in Game.rooms) {
+        if (!Memory.empire['roomName']) {
+            Memory.empire['roomName'] = {};
+        }
+    }
+
     let operations = loophelper.getOperations();
     for (let operation of operations) {
         operation.init();
     }
+    console.log(`After init: ${Game.cpu.getUsed()}`);
     // Right before headCount it might be good to iterate through Game.creeps and assign each creep to the operation it belongs to. Then operations need only to check their assigned creeps instead of all.
     for (let operation of operations) {
         operation.headCount();
-    }    
+    }
+    console.log(`After head count: ${Game.cpu.getUsed()}`);
     for (let operation of operations) {
         operation.actions();
     }
+    console.log(`After actions: ${Game.cpu.getUsed()}`);
     for (let operation of operations) {
         operation.finalize();
     }
@@ -82,7 +92,7 @@ module.exports.loop = function () {
     }
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     if (builders.length < 3) {
-       curSpawn.createCreep([WORK, WORK, CARRY, MOVE], undefined, { role: 'builder' });
+        curSpawn.createCreep([WORK, WORK, CARRY, MOVE], undefined, { role: 'builder' });
     }
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];

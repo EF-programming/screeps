@@ -133,10 +133,11 @@ mod.initPrototype = function () {
             if (targetPos2) {
                 currentRange = this.pos.getRangeTo(targetPos2);
                 let filteredPositions2 = _.filter(filteredPositions, p => p.getRangeTo(targetPos2) <= currentRange);
-                if (filteredPositions.length > 0) {
+                if (filteredPositions2.length > 0) {
                     filteredPositions = filteredPositions2;
                 }
             }
+            positions = filteredPositions;
         }
         positions = _.filter(positions, p => !p.isNearExit(0));
         let swampPosition;

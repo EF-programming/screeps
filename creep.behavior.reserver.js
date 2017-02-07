@@ -22,7 +22,7 @@ class Reserver extends Behavior {
             creep.reserveController(creep.room.controller);
         }
         else {
-            creep.blindMoveTo(creep.room.controller, {maxRooms:1});
+            creep.blindMoveTo(creep.room.controller, { maxRooms: 1 });
         }
     }
 }

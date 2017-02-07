@@ -13,7 +13,7 @@ class MiningMission extends Mission {
         }
     }
     initMission() {
-        this.dangerPeriod = ((Memory.empire[this.roomName] || {}).danger || {}).period || 0;
+        this.dangerPeriod = (Memory.empire[this.roomName].danger || {}).period || 0;
         // find storage.
         // Hardcoded, assumes storage exists.
         let room = Game.flags[this.roomName].room;

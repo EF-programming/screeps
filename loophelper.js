@@ -1,6 +1,34 @@
 let MiningOperation = require('operation.mining');
 let mod = {};
 module.exports = mod;
+mod.initMemory = function () {
+    if (!Memory.empire) {
+        Memory.empire = {};
+    }
+    for (let roomName in Game.rooms) {
+        if (!Memory.empire[roomName]) {
+            Memory.empire[roomName] = {};
+        }
+    }
+}
+mod.scanHostiles = function () {
+    if (Game.time % 5 === 0) {
+        for (let roomName in Game.rooms) {
+            let room = Game.rooms[roomName];
+            if (room.hostiles.length > 0) {
+                Memory.empire[roomName].danger = {};
+                Memory.empire[roomName].danger.hostileCount = room.hostiles.length; // maybe replace with threat level
+                Memory.empire[roomName].danger.period = Game.time + room.hostiles[0].ticksToLive;
+                // some system should analyze the danger level and mark it as salvageable or unsalvageable. If it's unsalvageable, certain mission creeps should go recycle themselves if their ttl is too low.
+            }
+            else {
+                if (Memory.empire[roomName].danger) {
+                    delete Memory.empire[roomName].danger;
+                }
+            }
+        }
+    }
+}
 mod.getOperations = function () {
     // opClass is the Class of the operation.
     function instantiateOperation(opClass, flag) {

@@ -7,7 +7,7 @@ class ReserveMission extends Mission {
     }
     initMission() {
         this.spawn = this.operation.findSpawn();
-        this.dangerPeriod = ((Memory.empire[this.roomName] || {}).danger || {}).period || 0;
+        this.dangerPeriod = (Memory.empire[this.roomName].danger || {}).period || 0;
     }
     headCount() {
         let reserversNeeded = 0;

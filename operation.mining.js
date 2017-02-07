@@ -33,20 +33,6 @@ class MiningOperation extends Operation {
                 this.addMission(new MiningMission(this, deserializeRoomPos(pos)));
             }
         }
-        if (!this.hasVision) {
-            return;
-        }
-        if (this.room.hostiles.length > 0) {
-            Memory.empire[this.roomName].danger = {};
-            Memory.empire[this.roomName].danger.hostileCount = this.room.hostiles.length; // maybe replace with threat level
-            Memory.empire[this.roomName].danger.period = Game.time + this.room.hostiles[0].ticksToLive;
-            // some system should analyze the danger level and mark it as salvageable or unsalvageable. If it's unsalvageable, certain mission creeps should go recycle themselves if their ttl is too low.
-        }
-        else if (this.room.danger) {
-            delete Memory.empire[this.roomName].danger;
-        }
-
-
     }
 }
 MiningOperation.operationTypeName = OPERATION_MINING;

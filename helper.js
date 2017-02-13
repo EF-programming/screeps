@@ -56,3 +56,6 @@ mod.checkEnemy = function(username) {
 mod.perfectHashTwoInts = function (a, b) {
     return a >= b ? a * a + a + b : a + b * b;
 }
+mod.everyXTicks = function (tickFrequency, offset) {
+    return Game.time % tickFrequency === offset;
+}

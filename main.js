@@ -26,45 +26,17 @@ module.exports.loop = function () {
         operation.finalize();
     }
 
+    /*
+        Temporary tutorial-based code below.
+    */
     curSpawn = Game.spawns['Spawn1'];
     curSpawn.room.controller.activateSafeMode();
-    if (Object.keys(curSpawn.memory.staticMines).length < 1) {
-        //curSpawn.memory.staticMines = {};
-        sources = curSpawn.room.find(FIND_SOURCES);
-        for (var key in sources) {
-            curSpawn.memory.staticMines[sources[key].id] = null;
-        }
-    }
-
-    var tower = Game.getObjectById('587eb40c4931ee927dba748c');
-    if (tower) {
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hitsMax - structure.hits > 400
-        });
-        if (closestDamagedStructure) {
-            //tower.repair(closestDamagedStructure);
-        }
-
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if (closestHostile) {
-            tower.attack(closestHostile);
-        }
-    }
 
     for (var name in Memory.creeps) {
         if (!Game.creeps[name]) {
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory:', name);
         }
-    }
-
-    // Manage static miners
-    for (var key in curSpawn.memory.staticMines) {
-
-        //if ( curSpawn.memory.staticMines[key].ticksToLive === null || curSpawn.memory.staticMines[key].ticksToLive < 12) {
-        //miner = curSpawn.createCreep([WORK,WORK,WORK,WORK,WORK,MOVE], undefined, {role: 'miner'});
-        //miner.memory.assignedSource = Game.getObjectById(key);
-        //}
     }
 
     var harvesters = _.filter(Game.creeps, creep => creep.memory.role == 'harvester');

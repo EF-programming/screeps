@@ -12,7 +12,7 @@ mod.initMemory = function () {
     }
 }
 mod.scanHostiles = function () {
-    if (Game.time % 5 === 0) {
+    if (everyXTicks(5, 0)) { // Every 5 ticks, scan for hostiles
         for (let roomName in Game.rooms) {
             let room = Game.rooms[roomName];
             if (room.hostiles.length > 0) {
@@ -24,6 +24,15 @@ mod.scanHostiles = function () {
             else {
                 if (Memory.empire[roomName].danger) {
                     delete Memory.empire[roomName].danger;
+                }
+            }
+        }
+    }
+    if (everyXTicks(100, 0)) { // Every 100 ticks, remove .danger object if it expired
+        for (let roomName in Memory.empire) {
+            if ((Memory.empire[roomName].danger || {}).period) {
+                if (Memory.empire[roomName].danger.period > Game.time) {
+                    delete Memory.empire[roomName.danger];
                 }
             }
         }
